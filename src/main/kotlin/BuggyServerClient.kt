@@ -9,13 +9,13 @@ import java.util.logging.LogManager
 import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
 
-class GlitchyServerClient(
+class BuggyServerClient(
     private val serverUrl: String,
 ) {
     private val chunkSize = CHUNK_MB
     private val maxRetries = MAX_RETRIES
     private val retryDelay = RETRY_DELAY_MS
-    private val logger = Logger.getLogger(GlitchyServerClient::class.java.name)
+    private val logger = Logger.getLogger(BuggyServerClient::class.java.name)
 
     companion object {
         const val KB = 1024
@@ -80,7 +80,11 @@ class GlitchyServerClient(
             }
         }
 
-        logger.info("Download finished, total size: ${output.size()} bytes")
+        if (output.size() > 0) {
+            logger.info("Download finished, total size: ${output.size()} bytes")
+        } else {
+            logger.warning("Download failed, no data received")
+        }
         return output.toByteArray()
     }
 

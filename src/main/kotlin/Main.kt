@@ -5,7 +5,7 @@ fun main() {
     val logger = Logger.getLogger("Main")
 
     val serverUrl = "http://127.0.0.1:8080"
-    val client = GlitchyServerClient(serverUrl)
+    val client = BuggyServerClient(serverUrl)
 
     val downloadedData = client.downloadData()
 
