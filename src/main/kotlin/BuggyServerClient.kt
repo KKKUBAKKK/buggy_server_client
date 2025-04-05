@@ -125,7 +125,6 @@ class BuggyServerClient(
                 val chunk = downloadChunk(position, endPosition)
 
                 if (chunk.isEmpty()) {
-                    logger.info("Download complete")
                     break
                 }
 
