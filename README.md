@@ -17,7 +17,7 @@ The client operates by:
 
 1. Breaking the download into configurable chunks (default 16MB)
 2. Using HTTP Range headers to request specific byte ranges
-3. Implementing exponential backoff for retries when server errors occur
+3. Implementing a retry mechanism for server errors
 4. Logging progress and errors throughout the download process
 5. Computing a SHA-256 hash for data verification
 
@@ -26,7 +26,7 @@ The client operates by:
 The client follows these steps:
 1. Initiates connection to the server
 2. Requests data in chunks using Range headers
-3. Processes each chunk and appends to output buffer
+3. Writes each chunk to the output file
 4. Retries failed chunks up to a configurable maximum
 5. Reports progress via logging
 6. Calculates SHA-256 hash of completed download
@@ -36,20 +36,24 @@ The client follows these steps:
 ```kotlin
 // Create a client instance with the server URL
 val serverUrl = "http://127.0.0.1:8080"
-val client = GlitchyServerClient(serverUrl)
+val client = BuggyServerClient(serverUrl)
 
-// Download the data
-val downloadedData = client.downloadData()
+// Download to a file
+val fileName = "downloaded_file.bin"
+client.downloadData(fileName)
 
-// Verify the download with SHA-256 hash
-val hash = calculateSha256(downloadedData)
+// Or download to a specific File object
+val file = File("downloaded_file.bin")
+val bytesDownloaded = client.downloadData(file)
 ```
 
 ## Configuration
 
-The client has several configurable constants in the `GlitchyServerClient` companion object:
+The client has several configurable constants in the `BuggyServerClient` companion object:
 
 ```kotlin
+const val KB = 1024                  // Size of a kilobyte in bytes
+const val MB = 1024 * KB             // Size of a megabyte in bytes
 const val CHUNK_MB = 16 * MB         // Size of each download chunk
 const val MAX_RETRIES = 5            // Maximum retry attempts
 const val RETRY_DELAY_MS = 500L      // Delay between retries
@@ -60,8 +64,8 @@ const val READ_TIMEOUT_MS = 5000     // Read timeout
 ## Project Structure
 
 - `src/main/kotlin/`
-    - `Main.kt` - Entry point with download execution and hash calculation
-    - `GlitchyServerClient.kt` - Main client implementation with download logic
+  - `Main.kt` - Entry point with download execution
+  - `BuggyServerClient.kt` - Main client implementation with download and hash calculation logic
 
 ## Building and Running
 
